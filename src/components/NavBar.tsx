@@ -10,9 +10,9 @@ export default function NavBar() {
 
         <nav className="flex flex-wrap justify-center sm:justify-end gap-4 text-blue-600">
           <Link href="/">Home</Link>
-          <Link href="/groups">View All Groups</Link>
-          <Link href="/groups/new">Create Group</Link>
-          <Link href="/users/you">My Profile</Link>
+          <Link href="/">View All Groups</Link>
+          <Link href="/">Create Group</Link>
+          <Link href="/">My Profile</Link>
         </nav>
 
        <div className="flex gap-3 text-blue-600">
