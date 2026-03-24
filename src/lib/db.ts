@@ -2,6 +2,6 @@ import postgres from 'postgres';
 
 const connectionString = process.env.DATABASE_URL!;
 
-export const sql: any = postgres(connectionString, {
+export const sql = postgres(connectionString, {
   max: 10,
 });
