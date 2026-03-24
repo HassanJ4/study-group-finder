@@ -1,7 +1,3 @@
-export default function UsersPage() {
-  return (
-    <div>
-      Users page
-    </div>
-  );
+export default function UsersIndex() {
+  return <div>Select a user to view their profile</div>;
 }
