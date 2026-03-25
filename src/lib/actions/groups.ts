@@ -57,3 +57,32 @@ export async function joinGroup(groupId: string) {
     ON CONFLICT (user_id, group_id) DO NOTHING
   `;
 }
+
+export async function leaveGroup(groupId: string) {
+  const user = await syncUser();
+  if (!user) redirect('/');
+
+  await sql`
+    DELETE FROM group_members
+    WHERE user_id = ${user.id}
+    AND group_id = ${groupId}
+  `;
+}
+
+export async function deleteGroup(groupId: string) {
+  const user = await syncUser();
+  if (!user) redirect('/');
+
+  const [group] = await sql`
+    SELECT created_by FROM groups WHERE id = ${groupId}
+  `;
+
+  if (!group) throw new Error('Group not found');
+  if (group.created_by !== user.id) throw new Error('Only the group creator can delete this group');
+
+  await sql`
+    DELETE FROM groups WHERE id = ${groupId}
+  `;
+
+  redirect('/groups');
+}

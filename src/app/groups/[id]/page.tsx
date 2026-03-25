@@ -1,5 +1,8 @@
 import { sql } from "@/lib/db";
 import { notFound } from "next/navigation";
+import { syncUser } from '@/lib/actions/syncUser';
+import { revalidatePath } from 'next/cache';
+import { joinGroup, leaveGroup, deleteGroup } from '@/lib/actions/groups';
 
 type Group = {
   id: string;
@@ -15,7 +18,7 @@ export default async function GroupPage({
 }: {
   params: { id: string };
 }) {
-  const { id } = params;
+ const { id } = await params;
 
   const groups = await sql<Group[]>`
     SELECT id, name, description, subject, created_by, created_at
@@ -29,6 +32,28 @@ export default async function GroupPage({
     return notFound();
   }
 
+  const user = await syncUser();
+if (!user) return null;
+
+  const membership = await sql`
+  SELECT id FROM group_members
+  WHERE group_id = ${id}
+  AND user_id = ${user.id}
+`;
+  const isMember = membership.length > 0;
+  const isCreator = group.created_by === user.id;
+
+  async function handleLeave() {
+  'use server';
+  await leaveGroup(id);
+  revalidatePath(`/groups/${id}`);
+}
+
+async function handleDelete() {
+  'use server';
+  await deleteGroup(id);
+}
+console.log('created_by:', group.created_by, 'user.id:', user.id, 'isMember:', isMember, 'isCreator:', isCreator);
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <h1 className="text-3xl font-bold">{group.name}</h1>
@@ -38,6 +63,22 @@ export default async function GroupPage({
           {group.subject}
         </span>
       )}
+
+      {!isCreator && isMember && (
+  <form action={handleLeave}>
+    <button className="text-sm text-red-500 hover:underline">
+      Leave Group
+    </button>
+  </form>
+)}
+
+{isCreator && (
+  <form action={handleDelete}>
+    <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+      Delete Group
+    </button>
+  </form>
+)}
 
       {group.description && (
         <p className="text-gray-700 leading-relaxed">{group.description}</p>
@@ -50,3 +91,4 @@ export default async function GroupPage({
     </div>
   );
 }
+
