@@ -20,7 +20,7 @@ export async function handleJoin(formData: FormData) {
 
   await sql`
     INSERT INTO group_members (user_id, group_id)
-    VALUES (${userId}, ${groupId})
+    VALUES (${user.id}, ${groupId})
     ON CONFLICT (user_id, group_id) DO NOTHING
   `;
 
