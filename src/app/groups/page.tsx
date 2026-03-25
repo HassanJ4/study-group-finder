@@ -1,23 +1,22 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
-import { auth, currentUser } from "@clerk/nextjs/server"
+import { syncUser } from "@/lib/actions/syncUser";
 import { sql } from "@/lib/db";
 
-type Group = { 
-    id:string;
-    name:string;
-    description: string | null;
+type Group = {
+  id: string;
+  name: string;
+  description: string | null;
 };
 
 export async function handleJoin(formData: FormData) {
   "use server";
 
   const groupId = formData.get("groupId")?.toString();
-  const { userId } = await auth(); 
-  
-  if (!userId) throw new Error("You must be signed in to join a group");
-  if (!groupId) throw new Error("Missing group ID");
+  const user = await syncUser();
 
+  if (!user) throw new Error("You must be signed in to join a group");
+  if (!groupId) throw new Error("Missing group ID");
 
   await sql`
     INSERT INTO group_members (user_id, group_id)
@@ -25,20 +24,23 @@ export async function handleJoin(formData: FormData) {
     ON CONFLICT (user_id, group_id) DO NOTHING
   `;
 
-  revalidatePath("/groups");}
+  revalidatePath("/groups");
+}
 
 export default async function GroupsPage() {
-  const user = await currentUser();
+  const user = await syncUser();
 
-  const groups: Group[] = await sql<Group>`SELECT * FROM groups`;
+  const groups = await sql<Group[]>`
+    SELECT * FROM groups
+    ORDER BY created_at DESC
+  `;
 
-  const joinedGroupIds =
-    user?.id
-      ? (await sql<{ group_id: string }[]>`
-          SELECT group_id FROM group_members
-          WHERE user_id = ${user.id}
-        `).map((r) => r.group_id)
-      : [];
+  const joinedGroupIds = user
+    ? (await sql<{ group_id: string }[]>`
+        SELECT group_id FROM group_members
+        WHERE user_id = ${user.id}
+      `).map((r: { group_id: string }) => r.group_id)
+    : [];
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">

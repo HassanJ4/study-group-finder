@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
-import { currentUser } from "@clerk/nextjs/server";
+import { syncUser } from "@/lib/actions/syncUser";
 import { SUBJECTS } from "@/lib/constants";
 
 export const metadata = {
@@ -11,7 +11,7 @@ export const metadata = {
 export async function createGroup(formData: FormData) {
   "use server";
 
-  const user = await currentUser();
+  const user = await syncUser();
   if (!user) throw new Error("You must be signed in to create a group");
 
   const name = formData.get("name")?.toString();
