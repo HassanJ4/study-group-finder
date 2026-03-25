@@ -21,7 +21,7 @@ export async function handleJoin(formData: FormData) {
 
   await sql`
     INSERT INTO group_members (user_id, group_id)
-    VALUES (${user.id}, ${groupId})
+    VALUES (${userId}, ${groupId})
     ON CONFLICT (user_id, group_id) DO NOTHING
   `;
 
@@ -41,33 +41,37 @@ export default async function GroupsPage() {
       : [];
 
   return (
-    <div>
-      <h1>All Groups</h1>
+    <div className="max-w-3xl mx-auto p-6 space-y-6">
+      <h1 className="text-3xl font-bold">All Groups</h1>
 
       {groups.length === 0 ? (
-        <p>No groups found.</p>
+        <p className="text-gray-600">No groups found.</p>
       ) : (
-        groups.map((group) => (
-          <div key={group.id}>
+        <div className="space-y-4">
+        {groups.map((group) => (
+          <div key={group.id} className="border rounded-lg p-4 hover:bg-gray-50 transition">
             <Link href={`/groups/${group.id}`}>
-              <h2>{group.name}</h2>
+              <h2 className="text-xl font-semibold hover:underline">{group.name}</h2>
             </Link>
-            <p>{group.description}</p>
+            <p className="text-gray-700 mt-1">{group.description}</p>
 
-            {user ? (
-              joinedGroupIds.includes(group.id) ? (
-                <button disabled>Joined</button>
-              ) : (
+            <div className="mt-3">
+                {user ? (
+                    joinedGroupIds.includes(group.id) ? (
+                    <button disabled className="px-3 py-1 text-sm bg-gray-200 text-gray-600 rounded cursor-not-allowed">Joined</button>
+                ) : (
                 <form action={handleJoin}>
                   <input type="hidden" name="groupId" value={group.id} />
-                  <button type="submit">Join</button>
+                  <button type="submit"className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">Join</button>
                 </form>
               )
             ) : (
-              <p>Sign in to join</p>
+              <p className="text-sm text-gray-500">Sign in to join</p>
             )}
+            </div>
           </div>
-        ))
+        ))}
+        </div>
       )}
     </div>
   );

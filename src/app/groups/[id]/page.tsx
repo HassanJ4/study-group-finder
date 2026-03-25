@@ -1,4 +1,5 @@
 import { sql } from "@/lib/db";
+import { notFound } from "next/navigation";
 
 type Group = {
   id: string;
@@ -25,12 +26,7 @@ export default async function GroupPage({
   const group = groups[0];
 
   if (!group) {
-    return (
-      <div className="max-w-2xl mx-auto p-6">
-        <h1 className="text-xl font-semibold">Group not found</h1>
-        <p className="text-gray-600">This group does not exist.</p>
-      </div>
-    );
+    return notFound();
   }
 
   return (
