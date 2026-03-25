@@ -10,24 +10,26 @@ export default function NavBar() {
 
         <nav className="flex flex-wrap justify-center sm:justify-end gap-4 text-blue-600">
           <Link href="/">Home</Link>
-          <Link href="/">View All Groups</Link>
+          <Link href="/groups">View All Groups</Link>
           <Link href="/">Create Group</Link>
           <Link href="/">My Profile</Link>
         </nav>
 
        <div className="flex gap-3 text-blue-600">
           <Show when="signed-out">
-            <SignInButton>
-              <button className="bg-blue-600 text-white rounded-full px-4 py-2 text-sm hover:bg-blue-700">
-                Sign In
-              </button>
-            </SignInButton>
+            <div className="flex gap-3">
+              <SignInButton>
+                <button className="bg-blue-600 text-white rounded-full px-4 py-2 text-sm hover:bg-blue-700">
+                  Sign In
+                </button>
+              </SignInButton>
 
-            <SignUpButton>
-              <button className="bg-purple-600 text-white rounded-full px-4 py-2 text-sm hover:bg-purple-700">
-                Sign Up
-              </button>
-            </SignUpButton>
+              <SignUpButton>
+                <button className="bg-purple-600 text-white rounded-full px-4 py-2 text-sm hover:bg-purple-700">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </div>
           </Show>
 
           <Show when="signed-in">
