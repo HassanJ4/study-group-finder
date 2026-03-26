@@ -17,7 +17,16 @@ export default function GroupHeader({ group }: { group: Group }) {
 
       <div className="text-sm text-gray-500">
         <p>Created by: {group.created_by}</p>
-        <p>Created on: {new Date(group.created_at).toLocaleDateString()}</p>
+        <p>
+  Created on:{" "}
+  {new Date(group.created_at).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  })}
+</p>
       </div>
     </div>
   );
