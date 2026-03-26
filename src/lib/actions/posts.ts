@@ -1,9 +1,18 @@
 'use server';
+
 import { sql } from '@/lib/db';
 import { syncUser } from './syncUser';
 
+export interface GroupPost {
+  id: string;
+  content: string;
+  created_at: string;
+  username: string;
+  avatar_url: string | null;
+}
+
 export async function getPostsByGroup(groupId: string) {
-  const posts = await sql`
+  const posts = await sql<GroupPost[]>`
     SELECT
       posts.id,
       posts.content,
