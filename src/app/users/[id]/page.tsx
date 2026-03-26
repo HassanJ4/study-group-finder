@@ -3,10 +3,10 @@ import PublicProfileInfo from "@/components/PublicProfileInfo";
 import GroupsList from "@/components/GroupsList";
 import PostsSection from "@/components/PostsSection";
 
-export default async function UserProfile({ params }: { params: { id: string } }) {
-  console.log("params.id =", params.id); // ← THIS is the correct place
-
-  const user = await getUserProfile(params.id);
+export default async function UserProfile({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
+  const user = await getUserProfile(id);
   if (!user) return <p>User not found</p>;
 
   const groups = await getUserGroups(user.id);
