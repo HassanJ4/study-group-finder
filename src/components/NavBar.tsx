@@ -1,43 +1,63 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
 import { Show, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 export default function NavBar() {
-    return (
-        <header className="bg-white border-b shadow-sm mb-6">
-      <div className="max-w-4xl mx-auto p-4 flex flex-col sm:flex-row items-center sm:justify-between gap-4">
+  return (
+    <header
+      className="w-full px-10 py-3 shadow-sm"
+      style={{ backgroundColor: "var(--sn-surface)" }}
+    >
+      <div className="flex items-center justify-between">
+       
+        <Link href="/">
+          <Image
+            src="/logo.png"
+            alt="Study Buddies"
+            width={120}
+            height={45}
+            className="object-contain"
+          />
+        </Link>
 
-        <h1 className="text-2xl font-bold">Study Buddies</h1>
-
-        <nav className="flex flex-wrap justify-center sm:justify-end gap-4 text-blue-600">
-          <Link href="/">Home</Link>
-          <Link href="/groups">View All Groups</Link>
-          <Link href="/groups/new">Create Group</Link>
-          <Link href="/users">All Users</Link>
-          <Link href="/users/you">My Profile</Link>
+        
+        <nav className="flex gap-8">
+          {[
+            { label: "Home",            href: "/" },
+            { label: "View All Groups", href: "/groups" },
+            { label: "Create Group",    href: "/groups/new" },
+            { label: "All Users",       href: "/users" },
+            { label: "My Profile",      href: "/users/you" },
+          ].map(({ label, href }) => (
+            <Link
+              key={label}
+              href={href}
+              className="text-sm font-medium transition-opacity hover:opacity-60"
+              style={{ color: "var(--sn-nav)" }}
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
 
-       <div className="flex gap-3 text-blue-600">
+        
+        <div className="flex gap-3">
           <Show when="signed-out">
             <div className="flex gap-3">
               <SignInButton>
-                <button className="bg-blue-600 text-white rounded-full px-4 py-2 text-sm hover:bg-blue-700">
-                  Sign In
-                </button>
+                <button className="btn-outline">Sign In</button>
               </SignInButton>
-
               <SignUpButton>
-                <button className="bg-purple-600 text-white rounded-full px-4 py-2 text-sm hover:bg-purple-700">
-                  Sign Up
-                </button>
+                <button>Sign Up</button>
               </SignUpButton>
             </div>
           </Show>
-
           <Show when="signed-in">
             <UserButton />
           </Show>
         </div>
-
       </div>
     </header>
   );
