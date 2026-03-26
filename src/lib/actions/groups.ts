@@ -3,22 +3,30 @@
 import { sql } from '@/lib/db';
 import { syncUser } from './syncUser';
 import { redirect } from 'next/navigation';
+import type { Group } from '@/types/database.types';
+
+export async function getGroupById(id: string): Promise<Group | null> {
+  const [group] = await sql<Group[]>`
+    SELECT id, name, description, subject, created_by, created_at
+    FROM groups
+    WHERE id = ${id}
+  `;
+  return group || null;
+}
 
 export async function getAllGroups() {
-  const groups = await sql`
+  return await sql`
     SELECT * FROM groups
     ORDER BY created_at DESC
   `;
-  return groups;
 }
 
 export async function getGroupsBySubject(subject: string) {
-  const groups = await sql`
+  return await sql`
     SELECT * FROM groups
     WHERE subject = ${subject}
     ORDER BY created_at DESC
   `;
-  return groups;
 }
 
 export async function createGroup({
@@ -85,4 +93,13 @@ export async function deleteGroup(groupId: string) {
   `;
 
   redirect('/groups');
+}
+
+export async function getMembershipStatus(groupId: string, userId: string) {
+  const membership = await sql`
+    SELECT id FROM group_members
+    WHERE group_id = ${groupId}
+    AND user_id = ${userId}
+  `;
+  return membership.length > 0;
 }
