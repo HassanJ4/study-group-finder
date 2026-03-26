@@ -3,6 +3,7 @@ import { syncUser } from "@/lib/actions/syncUser";
 import { getGroupById, getMembershipStatus, leaveGroup, deleteGroup, } from "@/lib/actions/groups";
 import { getPostsByGroup, createPost } from "@/lib/actions/posts";
 import { revalidatePath } from "next/cache";
+import Link from "next/link";
 
 import GroupInfo from "@/components/GroupInfo";
 import GroupActions from "@/components/GroupActions";
@@ -17,7 +18,16 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
 
 
   const user = await syncUser();
-  if (!user) return null;
+  if (!user) {
+  return (
+    <div className="max-w-2xl mx-auto p-6 text-center text-gray-600 space-y-2">
+      <p>Please sign in to view this group.</p>
+      <Link href="/sign-in" className="text-blue-600 underline">
+        Go to sign in
+      </Link>
+    </div>
+  );
+}
 
   const isMember = await getMembershipStatus(id, user.id);
   const isCreator = group.created_by === user.id;
