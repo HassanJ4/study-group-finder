@@ -4,7 +4,9 @@ export interface User {
   username: string;
   email: string;
   avatar_url: string | null;
+  bio: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Group {
@@ -40,4 +42,20 @@ export interface PostWithUser extends Post {
 
 export interface GroupMemberWithGroup extends GroupMember {
   groups: Group;
+}
+
+export interface PostWithGroup extends Post {
+  group_name: string;
+}
+
+export interface PublicUser {
+  id: string;
+  username: string;
+  avatar_url: string | null;
+  bio: string | null;
+}
+
+export interface SimpleGroup {
+  id: string;
+  name: string;
 }
