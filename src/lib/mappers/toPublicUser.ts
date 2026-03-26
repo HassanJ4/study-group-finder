@@ -1,4 +1,5 @@
 import type { PublicUser } from "@/types/database.types";
+import { syncUser } from "@/lib/actions/syncUser";
 
 export function toPublicUser(user: unknown): PublicUser {
   if (

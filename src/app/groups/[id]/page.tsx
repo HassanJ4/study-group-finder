@@ -9,8 +9,8 @@ import GroupActions from "@/components/GroupActions";
 import PostForm from "@/components/PostForm";
 import PostsList from "@/components/PostsList";
 
-export default async function GroupPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function GroupPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   const group = await getGroupById(id);
   if (!group) return notFound();
