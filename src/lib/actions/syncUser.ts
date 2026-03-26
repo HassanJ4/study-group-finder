@@ -24,7 +24,7 @@ export async function syncUser() {
   const avatarUrl: string | null = clerkUser.imageUrl ?? null;
 
   const [newUser] = await sql`
-    INSERT INTO users (clerk_user_id, username, avatar_url)
+    INSERT INTO users (clerk_user_id, username, avatar_url),
     VALUES (${userId}, ${username}, ${avatarUrl})
     RETURNING *
   `;
