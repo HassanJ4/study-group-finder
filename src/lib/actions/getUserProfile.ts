@@ -3,6 +3,8 @@
 import { sql } from "@/lib/db";
 import type { PublicUser, SimpleGroup, PostWithGroup } from "@/types/database.types";
 
+
+
 export async function getUserProfile(id: string) {
   const [user] = await sql<PublicUser[]>`
     SELECT id, username, avatar_url, bio
@@ -13,6 +15,7 @@ export async function getUserProfile(id: string) {
 }
 
 export async function getUserGroups(id: string) {
+  console.log('getUserGroups called with id:', id);
   return await sql<SimpleGroup[]>`
     SELECT g.id, g.name
     FROM groups g
